@@ -1,0 +1,36 @@
+name: manual
+on:
+    workflow_dispatch:
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Check out repository code
+              uses: actions/checkout@v4
+            - run: wget --no-verbose -r --no-parent -A '*.svg' -l1 -nH --cut-dirs=3 https://azure.microsoft.com/en-gb/patterns/styles/glyphs-icons/
+              continue-on-error: true
+            - run: |
+                git clone -n --depth=1 --filter=tree:0 https://github.com/David-Summers/Azure-Design.git
+                cd Azure-Design
+                git sparse-checkout set --no-cone /SVG_Azure_Grouped
+                git checkout
+                ls -l
+                du -hcs *
+            - uses: actions/setup-python@v5
+              with:
+                python-version: '3.11'
+            - run: pip install git+https://github.com/jikuja/svg2drawiolib.git#egg=svg2drawiolib
+            - run: |
+                cd Azure-Design/SVG_Azure_Grouped
+                for i in * ; do
+                  svg2drawiolib --output $i.xml $i
+                end
+                mv *.xml ../../
+            - run: ls -l
+            - name: Create Pull Request
+              uses: peter-evans/create-pull-request@v6
+              with:
+                add-paths: |
+                  *.xml
+                branch: automated-update
+                branch-suffix: timestamp
