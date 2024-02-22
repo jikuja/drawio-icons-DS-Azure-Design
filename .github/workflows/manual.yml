@@ -21,7 +21,7 @@ jobs:
             - run: |
                 cd Azure-Design/SVG_Azure_Grouped
                 for i in * ; do
-                  svg2drawiolib --output DS-$i.xml $i
+                  svg2drawiolib --output DS-$i.xml --postfix ' ds' $i
                 done
                 mv *.xml ../../
             - run: ls -l
