@@ -20,8 +20,9 @@ jobs:
             - run: pip install git+https://github.com/jikuja/svg2drawiolib.git#egg=svg2drawiolib
             - run: |
                 cd Azure-Design/SVG_Azure_Grouped
+                ls -l
                 for i in * ; do
-                  svg2drawiolib --output DS-$i.xml --postfix ' ds' $i
+                  svg2drawiolib --output "DS-$i.xml" --postfix ' ds' "$i"
                 done
                 mv *.xml ../../
             - run: ls -l
