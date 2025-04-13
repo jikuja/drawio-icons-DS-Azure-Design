@@ -22,10 +22,14 @@ jobs:
                 cd Azure-Design/SVG_Azure_Grouped
                 ls -l
                 for i in * ; do
+                  echo svg2drawiolib --output "DS-$i.xml" --postfix ' ds' "$i"
                   svg2drawiolib --output "DS-$i.xml" --postfix ' ds' "$i"
                 done
+                ls -l *.xml
                 mv *.xml ../../
-            - run: ls -l
+            - run: |
+                git status
+                ls -l
             - name: Create Pull Request
               uses: peter-evans/create-pull-request@v6
               with:
